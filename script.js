@@ -1,12 +1,17 @@
 function generateLink() {
     let url = document.getElementById("urlInput").value;
     let text = document.getElementById("textInput").value;
-    
+
     if (url && text) {
         let outputDiv = document.getElementById("output");
-        outputDiv.innerHTML = `<a href="${url}" target="_blank" id="generatedLink">${text}</a>`;
-        
-        // Show the copy button
+        let linkElement = document.createElement("a");
+        linkElement.href = url;
+        linkElement.textContent = text;
+        linkElement.target = "_blank";
+
+        outputDiv.innerHTML = "";
+        outputDiv.appendChild(linkElement);
+
         document.getElementById("copyBtn").style.display = "inline-block";
     } else {
         alert("Please enter both URL and text!");
@@ -14,15 +19,25 @@ function generateLink() {
 }
 
 function copyLink() {
-    let generatedLink = document.getElementById("generatedLink");
+    let url = document.getElementById("urlInput").value;
+    let text = document.getElementById("textInput").value;
 
-    // Create a temporary input element to copy the link
-    let tempInput = document.createElement("input");
-    document.body.appendChild(tempInput);
-    tempInput.value = generatedLink.outerHTML; // Copies the HTML tag
-    tempInput.select();
-    document.execCommand("copy");
-    document.body.removeChild(tempInput);
+    if (url && text) {
+        let tempDiv = document.createElement("div");
+        tempDiv.innerHTML = `<a href="${url}" target="_blank">${text}</a>`;
+        document.body.appendChild(tempDiv);
 
-    alert("Link copied to clipboard!");
+        let range = document.createRange();
+        range.selectNode(tempDiv);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges();
+
+        document.body.removeChild(tempDiv);
+
+        alert("Clickable link copied! Paste it anywhere.");
+    } else {
+        alert("Generate a link first!");
+    }
 }
